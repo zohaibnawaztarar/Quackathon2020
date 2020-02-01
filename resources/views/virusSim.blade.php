@@ -50,16 +50,32 @@
         }
     </style>
 
-
-
     <div id="map" style="position: relative; width: 500px; height: 300px;"></div>
     <div class="slidecontainer">
         <input type="range" min="1" max="8" value="1" class="slider" id="slider">
     </div>
 
 
+    <script>
+        function getCorona(){
+            $.ajax({
+                method: 'GET',
+                url: '{{route('corona')}}',
+                data: {_token: '{{Session::token()}}'}
+            })
+                .done(function (msg) {
+                    console.log(msg.data);
+
+                    if(msg.success){
+                    }
+                });
+        }
+    </script>
 
     <script>
+        var data = {};
+        getCorona();
+
         var basic_choropleth = new Datamap({
             element: document.getElementById("map"),
             projection: 'mercator',
@@ -95,4 +111,5 @@
             change();
         }, false);
     </script>
+
 @endsection

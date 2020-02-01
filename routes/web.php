@@ -23,8 +23,13 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/virusSim', function () {
-    return view('virusSim');
+    return view('virusSim', ['data' => \App\Corona::all()]);
 });
+
+Route::get('/getCorona', [
+    'uses' => 'AjaxController@getCorona',
+    'as' => 'corona'
+]);
 
 Route::get('/login', function () {
     return view('login');
