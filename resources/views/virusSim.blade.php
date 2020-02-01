@@ -52,11 +52,21 @@
 
     <div id="map" style="position: relative; width: 500px; height: 300px;"></div>
     <div class="slidecontainer">
-        <input type="range" min="1" max="8" value="1" class="slider" id="slider">
+        <input type="range" min="1" max="3" value="1" class="slider" id="slider">
     </div>
 
 
     <script>
+        var globalCorona = {};
+        var data = {
+          country: 'CHN',
+            day1: 270,
+            day10: 7153,
+            growthRate: 38.8,
+            period: 10,
+            density: 310
+        };
+
         function getCorona(){
             $.ajax({
                 method: 'GET',
@@ -65,7 +75,7 @@
             })
                 .done(function (msg) {
                     console.log(msg.data);
-
+                    globalCorona = msg.data;
                     if(msg.success){
                     }
                 });
@@ -73,7 +83,6 @@
     </script>
 
     <script>
-        var data = {};
         getCorona();
 
         var basic_choropleth = new Datamap({
@@ -81,15 +90,28 @@
             projection: 'mercator',
             fills: {
                 defaultFill: "#ABDDA4",
-                authorHasTraveledTo: "#fa0fa0"
+                infected: "#faa5a7",
+                infected2: "#fa7881",
+                infected3: "#fa2b2b",
+                infected4: "#fa0003"
             },
             data: {
-                USA: { fillKey: "authorHasTraveledTo" },
-                JPN: { fillKey: "authorHasTraveledTo" },
-                ITA: { fillKey: "authorHasTraveledTo" },
-                CRI: { fillKey: "authorHasTraveledTo" },
-                KOR: { fillKey: "authorHasTraveledTo" },
-                DEU: { fillKey: "authorHasTraveledTo" },
+                USA: { fillKey: "defaultFill" },
+                JPN: { fillKey: "defaultFill" },
+                ITA: { fillKey: "defaultFill" },
+                CRI: { fillKey: "defaultFill" },
+                KOR: { fillKey: "defaultFill" },
+                DEU: { fillKey: "defaultFill" },
+                CHN: { fillKey: "infected",
+                        day1: 270,
+                        day10: 7153,
+                        growthRate: 38.8,
+                        period: 10,
+                        density: 310
+                },
+            },
+            popupTemplate: function (geography, data) {
+                return '<div class="hoverinfo">'+geography.properties.name + 'Day 1' + data.day1;
             }
         });
 
