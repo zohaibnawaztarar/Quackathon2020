@@ -22,6 +22,10 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
+Route::get('/virusSim', function () {
+    return view('virusSim');
+});
+
 Route::get('/login', function () {
     return view('login');
 });
