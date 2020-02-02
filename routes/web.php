@@ -22,6 +22,10 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
+Route::get('/map', function () {
+    return view('map');
+});
+
 Route::get('/virusSim', function () {
     return view('virusSim', ['data' => \App\Corona::all()]);
 });
