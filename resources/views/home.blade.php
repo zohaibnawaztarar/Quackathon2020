@@ -17,7 +17,7 @@
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <!-- Custom styles for this template -->
     <link href="css/grayscale.min.css" rel="stylesheet">
     <link rel="stylesheet" media="screen" href="css/style.css">
@@ -98,204 +98,6 @@
         <!-- Chart code -->
         <script>
 
-                am4core.ready(function () {
-
-// Themes begin
-                    am4core.useTheme(am4themes_animated);
-// Themes end
-
-// Create map instance
-                    var chart = am4core.create("chartdiv", am4maps.MapChart);
-                    chart.geodata = am4geodata_worldLow;
-                    chart.projection = new am4maps.projections.Miller();
-                    chart.homeZoomLevel = 0;
-                    chart.homeGeoPoint = {
-                        latitude: 0,
-                        longitude: 0
-                    };
-
-// Create map polygon series
-                    var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
-                    polygonSeries.useGeodata = true;
-                    polygonSeries.mapPolygons.template.fill = chart.colors.getIndex(0).lighten(0.5);
-                    polygonSeries.mapPolygons.template.nonScalingStroke = true;
-                    polygonSeries.exclude = ["AQ"];
-
-// Add line bullets
-                    var cities = chart.series.push(new am4maps.MapImageSeries());
-                    cities.mapImages.template.nonScaling = true;
-
-                    var city = cities.mapImages.template.createChild(am4core.Circle);
-                    city.radius = 6;
-                    city.fill = chart.colors.getIndex(0).brighten(-0.2);
-                    city.strokeWidth = 2;
-                    city.stroke = am4core.color("#fff");
-
-                    function addCity(coords, title) {
-                        var city = cities.mapImages.create();
-                        city.latitude = coords.latitude;
-                        city.longitude = coords.longitude;
-                        city.tooltipText = title;
-                        return city;
-                    }
-
-                    var wuh = addCity({"latitude": 30.5928, "longitude": 114.3055}, "Wuhan");
-                    var paris = addCity({"latitude": 48.8567, "longitude": 2.3510}, "Paris");
-                    var toronto = addCity({"latitude": 43.8163, "longitude": -79.4287}, "Toronto");
-                    var la = addCity({"latitude": 34.3, "longitude": -118.15}, "Los Angeles");
-                    var havana = addCity({"latitude": 23, "longitude": -82}, "Havana");
-                    var lon = addCity({"latitude": 51.5, "longitude": -0.083333}, "london");
-                    var bjn = addCity({"latitude": 39.91666667, "longitude": 116.383333}, "Beijing");
-                    var jpn = addCity({"latitude": 35.68333333, "longitude": 139.75}, "Tokyo");
-                    var sgn = addCity({"latitude": 1.283333333, "longitude": 103.85}, "Singapore");
-                    var twn = addCity({"latitude": 25.03333333, "longitude": 121.516667}, "Taiwan");
-
-
-// Add lines
-                    var lineSeries = chart.series.push(new am4maps.MapArcSeries());
-                    lineSeries.mapLines.template.line.strokeWidth = 2;
-                    lineSeries.mapLines.template.line.strokeOpacity = 0.5;
-                    lineSeries.mapLines.template.line.stroke = city.fill;
-                    lineSeries.mapLines.template.line.nonScalingStroke = true;
-                    lineSeries.mapLines.template.line.strokeDasharray = "1,1";
-                    lineSeries.zIndex = 10;
-
-                    var shadowLineSeries = chart.series.push(new am4maps.MapLineSeries());
-                    shadowLineSeries.mapLines.template.line.strokeOpacity = 0;
-                    shadowLineSeries.mapLines.template.line.nonScalingStroke = true;
-                    shadowLineSeries.mapLines.template.shortestDistance = false;
-                    shadowLineSeries.zIndex = 5;
-
-                    function addLine(from, to) {
-                        var line = lineSeries.mapLines.create();
-                        line.imagesToConnect = [from, to];
-                        line.line.controlPointDistance = -0.3;
-
-                        var shadowLine = shadowLineSeries.mapLines.create();
-                        shadowLine.imagesToConnect = [from, to];
-
-                        return line;
-                    }
-
-                    addLine(wuh, paris);
-                    addLine(wuh, toronto);
-                    addLine(wuh, la);
-                    addLine(wuh, havana);
-                    addLine(wuh, lon);
-                    addLine(wuh, bjn);
-                    addLine(wuh, jpn);
-                    addLine(wuh, sgn);
-                    addLine(wuh, twn);
-
-// Add plane
-                    var plane = lineSeries.mapLines.getIndex(0).lineObjects.create();
-                    plane.position = 0;
-                    plane.width = 48;
-                    plane.height = 48;
-
-                    plane.adapter.add("scale", function (scale, target) {
-                        return 0.5 * (1 - (Math.abs(0.5 - target.position)));
-                    })
-
-                    var planeImage = plane.createChild(am4core.Sprite);
-                    planeImage.scale = 0.08;
-                    planeImage.horizontalCenter = "middle";
-                    planeImage.verticalCenter = "middle";
-                    planeImage.path = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
-                    planeImage.fill = chart.colors.getIndex(2).brighten(-0.2);
-                    planeImage.strokeOpacity = 0;
-
-                    var shadowPlane = shadowLineSeries.mapLines.getIndex(0).lineObjects.create();
-                    shadowPlane.position = 0;
-                    shadowPlane.width = 48;
-                    shadowPlane.height = 48;
-
-                    var shadowPlaneImage = shadowPlane.createChild(am4core.Sprite);
-                    shadowPlaneImage.scale = 0.05;
-                    shadowPlaneImage.horizontalCenter = "middle";
-                    shadowPlaneImage.verticalCenter = "middle";
-                    shadowPlaneImage.path = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
-                    shadowPlaneImage.fill = am4core.color("#000");
-                    shadowPlaneImage.strokeOpacity = 0;
-
-                    shadowPlane.adapter.add("scale", function (scale, target) {
-                        target.opacity = (0.6 - (Math.abs(0.5 - target.position)));
-                        return 0.5 - 0.3 * (1 - (Math.abs(0.5 - target.position)));
-                    })
-
-// Plane animation
-                    var currentLine = 0;
-                    var direction = 1;
-
-                    function flyPlane() {
-
-                        // Get current line to attach plane to
-                        plane.mapLine = lineSeries.mapLines.getIndex(currentLine);
-                        plane.parent = lineSeries;
-                        shadowPlane.mapLine = shadowLineSeries.mapLines.getIndex(currentLine);
-                        shadowPlane.parent = shadowLineSeries;
-                        shadowPlaneImage.rotation = planeImage.rotation;
-
-                        // Set up animation
-                        var from, to;
-                        var numLines = lineSeries.mapLines.length;
-                        if (direction == 1) {
-                            from = 0
-                            to = 1;
-                            if (planeImage.rotation != 0) {
-                                planeImage.animate({
-                                    to: 0,
-                                    property: "rotation"
-                                }, 1000).events.on("animationended", flyPlane);
-                                return;
-                            }
-                        } else {
-                            from = 1;
-                            to = 0;
-                            if (planeImage.rotation != 180) {
-                                planeImage.animate({
-                                    to: 180,
-                                    property: "rotation"
-                                }, 1000).events.on("animationended", flyPlane);
-                                return;
-                            }
-                        }
-
-                        // Start the animation
-                        var animation = plane.animate({
-                            from: from,
-                            to: to,
-                            property: "position"
-                        }, 5000, am4core.ease.sinInOut);
-                        animation.events.on("animationended", flyPlane)
-                        /*animation.events.on("animationprogress", function(ev) {
-                          var progress = Math.abs(ev.progress - 0.5);
-                          //console.log(progress);
-                          //planeImage.scale += 0.2;
-                        });*/
-
-                        shadowPlane.animate({
-                            from: from,
-                            to: to,
-                            property: "position"
-                        }, 5000, am4core.ease.sinInOut);
-
-                        // Increment line, or reverse the direction
-                        currentLine += direction;
-                        if (currentLine < 0) {
-                            currentLine = 0;
-                            direction = 1;
-                        } else if ((currentLine + 1) > numLines) {
-                            currentLine = numLines - 1;
-                            direction = -1;
-                        }
-
-                    }
-
-// Go!
-                    flyPlane();
-
-                }); // end am4core.ready()
 
         </script>
 
@@ -320,47 +122,320 @@
                     <p class="text-black-50">Statistics till 1st of February 2020 since the outbreak of virus</p>
                     <div>
                         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-                        <script type="text/javascript">
-                            var chart;
-                            var options;
 
-                            google.charts.load('current', {
-                                'packages': ['geochart'],
-                                // Note: you will need to get a mapsApiKey for your project.
-                                // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-                                'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
-                            });
-                            google.charts.setOnLoadCallback(drawRegionsMap);
-
-                            function drawRegionsMap() {
-                                var data = google.visualization.arrayToDataTable([
-                                    ['Country', 'Total Cases', 'Total Deaths'],
-                                    ['China', 11901, 259], ['Japan', 20, 0], ['Thailand', 19, 0], ['Singapore', 18, 0], ['Hong Kong', 13, 0], ['Australia', 12, 0], ['South Korea', 12, 0], ['Taiwan', 10, 0], ['Malaysia', 8, 0], ['United States', 8, 0], ['Germany', 7, 0], ['Macao', 7, 0], ['Vietnam', 6, 0],
-                                    ['France', 6, 0], ['United Arab Emirates', 4, 0], ['Canada', 4, 0], ['Italy', 2, 0], ['Russia', 2, 0], ['United Kingdom', 2, 0], ['Sri Lanka', 1, 0], ['Nepal', 1, 0], ['Sweden', 1, 0], ['Cambodia', 1, 0], ['India', 1, 0], ['Finland', 1, 0], ['Philippines', 1, 0], ['Spain', 1, 0],
-                                ]);
-
-
-                                options = {
-                                    region: 'world', // Africa
-                                    colorAxis: {colors: ['#00853f','#ffffff','#000000', '#b3b3b3', '#e31b23']},
-                                    backgroundColor: '#ffffff',
-                                    datalessRegionColor: '#DCDCDC',
-                                    defaultColor: '#f5f5f5',
-                                };
-
-                                chart = new google.visualization.GeoChart(document.getElementById('geochart-colors'));
-                                chart.draw(data, options);
-                            };
-
-
-                        </script>
 
                         <div id="geochart-colors" style="width: 1000px; height: 700px;"></div>
+                        <div class="slidecontainer">
+                            <input type="range" min="1" max="3" value="1" class="slider" id="slider">
+                        </div>
+
+                        <button class="btn-primary" onclick="play()">Play</button>
+                        <br><br>
                     </div>
+
                     <a href="#symptoms" class="btn btn-primary js-scroll-trigger">Check Symptoms</a>
                 </div>
             </div>
+            <script type="text/javascript">
+                var chart;
+                var options;
 
+                var globalConcaps;
+
+                var chart2;
+                var options2;
+
+                var data1, data2, data3;
+
+                getCorona();
+                drawChart();
+
+                function play(){
+                    document.getElementById('slider').value = 0;
+                    setTimeout(() => { document.getElementById('slider').value++; updateMap(data2); }, 2000);
+                    setTimeout(() => { document.getElementById('slider').value++; updateMap(data3); }, 4000);
+                }
+
+                function getCorona(){
+                    $.ajax({
+                        method: 'GET',
+                        url: '{{route('concaps')}}',
+                        data: {_token: '{{Session::token()}}'}
+                    })
+                        .done(function (msg) {
+                            console.log(msg.data);
+                            globalConcaps = msg.data;
+                            createChart();
+                            if(msg.success){
+                            }
+                        });
+                }
+
+                document.getElementById("slider").addEventListener("change", function() {
+                    let temp = "data" + document.getElementById("slider").value;
+                    console.log(temp);
+                    updateMap(temp);
+                }, false);
+
+                function updateMap(data) {
+                    chart2.draw(data, options2);
+                }
+
+                function drawChart() {
+                    google.charts.load('current', {
+                        'packages': ['geochart'],
+                        // Note: you will need to get a mapsApiKey for your project.
+                        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+                        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+                    });
+                    google.charts.setOnLoadCallback(drawRegionsMap);
+
+                    function drawRegionsMap() {
+
+                        // for(let i=0; i<coronaData.length; i++){
+                        //     data1[i+1] = [coronaData[i].country, coronaData[i].cases_day1, 1];
+                        // }
+
+                        // data1 = google.visualization.arrayToDataTable([
+                        //     ['Country', 'Total Cases', 'Total Deaths'],
+                        //     ['China', 11901, 259], ['Japan', 20, 0], ['Thailand', 19, 0], ['Singapore', 18, 0], ['Hong Kong', 13, 0], ['Australia', 12, 0], ['South Korea', 12, 0], ['Taiwan', 10, 0], ['Malaysia', 8, 0], ['United States', 8, 0], ['Germany', 7, 0], ['Macao', 7, 0], ['Vietnam', 6, 0],
+                        //     ['France', 6, 0], ['United Arab Emirates', 4, 0], ['Canada', 4, 0], ['Italy', 2, 0], ['Russia', 2, 0], ['United Kingdom', 2, 0], ['Sri Lanka', 1, 0], ['Nepal', 1, 0], ['Sweden', 1, 0], ['Cambodia', 1, 0], ['India', 1, 0], ['Finland', 1, 0], ['Philippines', 1, 0], ['Spain', 1, 0]
+                        // ]);
+                        //
+                        // data2 = google.visualization.arrayToDataTable([
+                        //     ['Country', 'Total Cases', 'Total Deaths'],
+                        //     ['China', 23802, 518*2], ['Japan', 41*2, 0], ['Thailand', 27*2, 0], ['Singapore', 503*2, 0], ['Hong Kong', 738*2, 0], ['Australia', 12*2, 0], ['South Korea', 31*2, 0], ['Taiwan', 30*2, 0], ['Malaysia', 10*2, 0], ['United States', 8*2, 0], ['Germany', 12*2, 0], ['Macao', 7*2, 0], ['Vietnam', 6*2, 0],
+                        //     ['France', 9, 0], ['United Arab Emirates', 5*2, 0], ['Canada', 4*2, 0], ['Italy', 3*2, 0], ['Russia', 2*2, 0], ['United Kingdom', 3*2, 0], ['Sri Lanka', 2*2, 0], ['Nepal', 1*2, 0], ['Sweden', 1*2, 0], ['Cambodia', 1*2, 0], ['India', 2*2, 0], ['Finland', 1*2, 0], ['Philippines', 2*2, 0], ['Spain', 1*2, 0]
+                        // ]);
+                        //
+                        // data3 = google.visualization.arrayToDataTable([
+                        //     ['Country', 'Total Cases', 'Total Deaths'],
+                        //     ['China', 29391, 1036], ['Japan', 85*2, 2*2], ['Thailand', 38*2, 0], ['Singapore', 14064*2, 16*2], ['Hong Kong', 41949/2, 67*2], ['Australia', 12*2, 0], ['South Korea', 81*2, 0], ['Taiwan', 92*2, 0], ['Malaysia', 13*2, 0], ['United States', 8*2, 0], ['Germany', 21*2, 0], ['Macao', 488*2, 0], ['Vietnam', 12*2, 0],
+                        //     ['France', 12*2, 0], ['United Arab Emirates', 6*2, 0], ['Canada', 4*2, 0], ['Italy', 4*2, 0], ['Russia', 2*2, 0], ['United Kingdom', 5*2, 0], ['Sri Lanka', 3*2, 0], ['Nepal', 1*2, 0], ['Sweden', 1*2, 0], ['Cambodia', 1*2, 0], ['India', 4*2, 0], ['Finland', 1*2, 0], ['Philippines', 4*2, 0], ['Spain', 1*2, 0]
+                        // ]);
+
+                        data1 = google.visualization.arrayToDataTable([
+                            ['Country', 'Total Cases', 'Total Deaths'],
+                            ['Japan', 20, 0], ['Thailand', 19, 0], ['Singapore', 18, 0], ['Hong Kong', 13, 0], ['Australia', 12, 0], ['South Korea', 12, 0], ['Taiwan', 10, 0], ['Malaysia', 8, 0], ['United States', 8, 0], ['Germany', 7, 0], ['Macao', 7, 0], ['Vietnam', 6, 0],
+                            ['France', 6, 0], ['United Arab Emirates', 4, 0], ['Canada', 4, 0], ['Italy', 2, 0], ['Russia', 2, 0], ['United Kingdom', 2, 0], ['Sri Lanka', 1, 0], ['Nepal', 1, 0], ['Sweden', 1, 0], ['Cambodia', 1, 0], ['India', 1, 0], ['Finland', 1, 0], ['Philippines', 1, 0], ['Spain', 1, 0]
+                        ]);
+
+                        data2 = google.visualization.arrayToDataTable([
+                            ['Country', 'Total Cases', 'Total Deaths'],
+                            ['Japan', 41*4, 0], ['Thailand', 27*4, 0], ['Singapore', 2*4, 0], ['Hong Kong', 2*4, 0], ['Australia', 12*4, 0], ['South Korea', 31*4, 0], ['Taiwan', 30*4, 0], ['Malaysia', 10*4, 0], ['United States', 8*4, 0], ['Germany', 12*4, 0], ['Macao', 7*4, 0], ['Vietnam', 6*4, 0],
+                            ['France', 9, 0], ['United Arab Emirates', 5*4, 0], ['Canada', 4*4, 0], ['Italy', 3*4, 0], ['Russia', 2*4, 0], ['United Kingdom', 3*4, 0], ['Sri Lanka', 2*4, 0], ['Nepal', 1*4, 0], ['Sweden', 1*4, 0], ['Cambodia', 1*4, 0], ['India', 2*4, 0], ['Finland', 1*4, 0], ['Philippines', 2*4, 0], ['Spain', 1*4, 0]
+                        ]);
+
+                        data3 = google.visualization.arrayToDataTable([
+                            ['Country', 'Total Cases', 'Total Deaths'],
+                            ['Japan', 85*4, 2*4], ['Thailand', 38*4, 0], ['Singapore', 0, 16*4], ['Hong Kong', 1/2, 67*4], ['Australia', 12*4, 0], ['South Korea', 81*4, 0], ['Taiwan', 92*4, 0], ['Malaysia', 13*4, 0], ['United States', 8*4, 0], ['Germany', 21*4, 0], ['Macao', 1*4, 0], ['Vietnam', 12*4, 0],
+                            ['France', 12*4, 0], ['United Arab Emirates', 6*4, 0], ['Canada', 4*4, 0], ['Italy', 4*4, 0], ['Russia', 2*4, 0], ['United Kingdom', 5*4, 0], ['Sri Lanka', 3*4, 0], ['Nepal', 1*4, 0], ['Sweden', 1*4, 0], ['Cambodia', 1*4, 0], ['India', 4*4, 0], ['Finland', 1*4, 0], ['Philippines', 4*4, 0], ['Spain', 1*4, 0]
+                        ]);
+
+                        options2 = {
+                            region: 'world', // world
+                            colorAxis: {colors: ['#8EFF22','#B3FF22','#C7FF22', '#DEFF22', '#F9FF22', '#FFF122', '#FFDD22', '#FFCC22', '#FFBF22', '#FF8D22', '#FF7922', '#FF5E22', '#FF4722', '#FF3D22', '#FF2922', '#FF2222']},
+                            backgroundColor: '#ffffff',
+                            datalessRegionColor: '#DCDCDC',
+                            defaultColor: '#f5f5f5',
+                        };
+
+                        chart2 = new google.visualization.GeoChart(document.getElementById('geochart-colors'));
+                        chart2.draw(data1, options2);
+                    }
+                }
+
+                function createChart() {
+                    am4core.ready(function () {
+
+// Themes begin
+                        am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create map instance
+                        var chart = am4core.create("chartdiv", am4maps.MapChart);
+                        chart.geodata = am4geodata_worldLow;
+                        chart.projection = new am4maps.projections.Miller();
+                        chart.homeZoomLevel = 0;
+                        chart.homeGeoPoint = {
+                            latitude: 0,
+                            longitude: 0
+                        };
+
+// Create map polygon series
+                        var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+                        polygonSeries.useGeodata = true;
+                        polygonSeries.mapPolygons.template.fill = chart.colors.getIndex(0).lighten(0.5);
+                        polygonSeries.mapPolygons.template.nonScalingStroke = true;
+                        polygonSeries.exclude = ["AQ"];
+
+// Add line bullets
+                        var cities = chart.series.push(new am4maps.MapImageSeries());
+                        cities.mapImages.template.nonScaling = true;
+
+                        var city = cities.mapImages.template.createChild(am4core.Circle);
+                        city.radius = 6;
+                        city.fill = chart.colors.getIndex(0).brighten(-0.2);
+                        city.strokeWidth = 2;
+                        city.stroke = am4core.color("#fff");
+
+                        function addCity(coords, title) {
+                            var city = cities.mapImages.create();
+                            city.latitude = coords.latitude;
+                            city.longitude = coords.longitude;
+                            city.tooltipText = title;
+                            return city;
+                        }
+
+
+                        //var wuh = addCity({"latitude": 30.5928, "longitude": 114.3055}, "Wuhan");
+                        // var paris = addCity({"latitude": 48.8567, "longitude": 2.3510}, "Paris");
+                        // var toronto = addCity({"latitude": 43.8163, "longitude": -79.4287}, "Toronto");
+                        // var la = addCity({"latitude": 34.3, "longitude": -118.15}, "Los Angeles");
+                        // var havana = addCity({"latitude": 23, "longitude": -82}, "Havana");
+                        // var isb = addCity({"latitude": 33.6844, "longitude": 73.0479}, "Islamabad");
+
+// Add lines
+                        var lineSeries = chart.series.push(new am4maps.MapArcSeries());
+                        lineSeries.mapLines.template.line.strokeWidth = 2;
+                        lineSeries.mapLines.template.line.strokeOpacity = 0.5;
+                        lineSeries.mapLines.template.line.stroke = city.fill;
+                        lineSeries.mapLines.template.line.nonScalingStroke = true;
+                        lineSeries.mapLines.template.line.strokeDasharray = "1,1";
+                        lineSeries.zIndex = 10;
+
+                        var shadowLineSeries = chart.series.push(new am4maps.MapLineSeries());
+                        shadowLineSeries.mapLines.template.line.strokeOpacity = 0;
+                        shadowLineSeries.mapLines.template.line.nonScalingStroke = true;
+                        shadowLineSeries.mapLines.template.shortestDistance = false;
+                        shadowLineSeries.zIndex = 5;
+
+                        function addLine(from, to) {
+                            var line = lineSeries.mapLines.create();
+                            line.imagesToConnect = [from, to];
+                            line.line.controlPointDistance = -0.3;
+
+                            var shadowLine = shadowLineSeries.mapLines.create();
+                            shadowLine.imagesToConnect = [from, to];
+
+                            return line;
+                        }
+
+                        var wuh = addCity({"latitude": 30.5928, "longitude": 114.3055}, "Wuhan");
+
+                        for (let i=0; i<globalConcaps.length; i++){
+                            let city = addCity({"latitude": globalConcaps[i].CapitalLatitude, "longitude": globalConcaps[i].CapitalLongitude}, globalConcaps[i].CountryName);
+                            addLine(wuh, city);
+                        }
+
+                        // addLine(wuh, paris);
+                        // addLine(wuh, toronto);
+                        // addLine(wuh, la);
+                        // addLine(wuh, havana);
+
+// Add plane
+                        var plane = lineSeries.mapLines.getIndex(0).lineObjects.create();
+                        plane.position = 0;
+                        plane.width = 48;
+                        plane.height = 48;
+
+                        plane.adapter.add("scale", function (scale, target) {
+                            return 0.5 * (1 - (Math.abs(0.5 - target.position)));
+                        });
+
+                        var planeImage = plane.createChild(am4core.Sprite);
+                        planeImage.scale = 0.08;
+                        planeImage.horizontalCenter = "middle";
+                        planeImage.verticalCenter = "middle";
+                        planeImage.path = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
+                        planeImage.fill = am4core.color("#fa0003");
+                        planeImage.strokeOpacity = 0;
+
+                        var shadowPlane = shadowLineSeries.mapLines.getIndex(0).lineObjects.create();
+                        shadowPlane.position = 0;
+                        shadowPlane.width = 48;
+                        shadowPlane.height = 48;
+
+                        var shadowPlaneImage = shadowPlane.createChild(am4core.Sprite);
+                        shadowPlaneImage.scale = 0.05;
+                        shadowPlaneImage.horizontalCenter = "middle";
+                        shadowPlaneImage.verticalCenter = "middle";
+                        shadowPlaneImage.path = "m2,106h28l24,30h72l-44,-133h35l80,132h98c21,0 21,34 0,34l-98,0 -80,134h-35l43,-133h-71l-24,30h-28l15,-47";
+                        shadowPlaneImage.fill = am4core.color("#000");
+                        shadowPlaneImage.strokeOpacity = 0;
+
+                        shadowPlane.adapter.add("scale", function (scale, target) {
+                            target.opacity = (0.6 - (Math.abs(0.5 - target.position)));
+                            return 0.5 - 0.3 * (1 - (Math.abs(0.5 - target.position)));
+                        });
+
+// Plane animation
+                        var currentLine = 0;
+                        var direction = 1;
+
+                        function flyPlane() {
+
+                            // Get current line to attach plane to
+                            plane.mapLine = lineSeries.mapLines.getIndex(currentLine);
+                            plane.parent = lineSeries;
+                            shadowPlane.mapLine = shadowLineSeries.mapLines.getIndex(currentLine);
+                            shadowPlane.parent = shadowLineSeries;
+                            shadowPlaneImage.rotation = planeImage.rotation;
+
+                            // Set up animation
+                            var from, to;
+                            var numLines = lineSeries.mapLines.length;
+                            if (direction == 1) {
+                                from = 0
+                                to = 1;
+                                if (planeImage.rotation != 0) {
+                                    planeImage.animate({to: 0, property: "rotation"}, 1000).events.on("animationended", flyPlane);
+                                    return;
+                                }
+                            } else {
+                                from = 1;
+                                to = 0;
+                                if (planeImage.rotation != 180) {
+                                    planeImage.animate({to: 180, property: "rotation"}, 1000).events.on("animationended", flyPlane);
+                                    return;
+                                }
+                            }
+
+                            // Start the animation
+                            var animation = plane.animate({
+                                from: from,
+                                to: to,
+                                property: "position"
+                            }, 4000, am4core.ease.sinInOut);
+                            animation.events.on("animationended", flyPlane)
+                            /*animation.events.on("animationprogress", function(ev) {
+                              var progress = Math.abs(ev.progress - 0.5);
+                              //console.log(progress);
+                              //planeImage.scale += 0.2;
+                            });*/
+
+                            shadowPlane.animate({
+                                from: from,
+                                to: to,
+                                property: "position"
+                            }, 4000, am4core.ease.sinInOut);
+
+                            // Increment line, or reverse the direction
+                            currentLine += direction;
+                            if (currentLine < 0) {
+                                currentLine = 0;
+                                direction = 1;
+                            } else if ((currentLine + 1) > numLines) {
+                                currentLine = numLines - 1;
+                                direction = -1;
+                            }
+                        }
+// Go!
+                        flyPlane();
+                    }); // end am4core.ready()
+                }
+
+            </script>
 
         </div>
 </section>

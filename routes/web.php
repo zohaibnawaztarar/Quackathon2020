@@ -44,6 +44,10 @@ Route::get('/getConcaps', [
     'as' => 'concaps'
 ]);
 
+Route::get('/home', function () {
+    return view('home');
+});
+
 Route::get('/login', function () {
     return view('login');
 });
