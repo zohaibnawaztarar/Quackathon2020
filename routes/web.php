@@ -26,6 +26,10 @@ Route::get('/map', function () {
     return view('map');
 });
 
+Route::get('/flightsMap', function () {
+    return view('flightsMap');
+});
+
 Route::get('/virusSim', function () {
     return view('virusSim', ['data' => \App\Corona::all()]);
 });
@@ -33,6 +37,11 @@ Route::get('/virusSim', function () {
 Route::get('/getCorona', [
     'uses' => 'AjaxController@getCorona',
     'as' => 'corona'
+]);
+
+Route::get('/getConcaps', [
+    'uses' => 'AjaxController@getConcaps',
+    'as' => 'concaps'
 ]);
 
 Route::get('/login', function () {

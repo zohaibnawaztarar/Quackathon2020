@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Concap;
 use App\Corona;
 use App\StoredPassword;
 use Illuminate\Http\Request;
@@ -20,6 +21,18 @@ class AjaxController extends Controller
         json($response = array(
             'success' => $success,
             'data' => $corona,
+        ));
+    }
+
+    public function getConcaps(Request $request)
+    {
+        $success = false;
+        $concap = Concap::all();
+
+        return response()->
+        json($response = array(
+            'success' => $success,
+            'data' => $concap,
         ));
     }
 }
